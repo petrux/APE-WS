@@ -1,5 +1,6 @@
 """ TODO
 """
+import sys
 from requests import request
 
 
@@ -16,10 +17,13 @@ class APEWSRequest(object):
         self._result = None
         print str(self._params)
 
-    def _getResult(self):
+    def _get_result(self):
         response = request("GET", self.URL, params=self._params)
         response.raise_for_status()
-        print response.status_code
+        if len(response.url) > 2000:
+            sys.stderr.write("URL is " + len(response.url)
+                             + " character long, switching to POST.")
+            response = request("POST", self.URL, data=self._params)
         return response.text
 
     @property
@@ -28,25 +32,31 @@ class APEWSRequest(object):
         """
 
         if not self._result:
-            self._result = self._getResult()
+            self._result = self._get_result()
         return self._result
 
-    def getParamValue(self, name):
+    def get_param_value(self, name):
         """ TODO
         """
         return self._params[name]
 
-    def setParamValue(self, name, value):
+    def set_param_value(self, name, value):
         self._params[name] = value
 
     @classmethod
-    def getParamsDictionary(cls):
+    def _get_default_params(cls):
         """ TODO
         """
         return {
             "text": "",
             "solo": "owlxml"
         }
+
+    @classmethod
+    def build(cls, text, **kwargs):
+        params = kwargs if kwargs else cls._get_default_params()
+        params["text"] = text
+        return APEWSRequest(**params)
 
 if __name__ == '__main__':
     r = APEWSRequest(**{
