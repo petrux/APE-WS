@@ -13,11 +13,23 @@ class APEWSRequest(object):
     def __init__(self, **kwargs):
         """ TODO
         """
-        self._params = kwargs
+
         self._result = None
-        print str(self._params)
+        self._def_params = self._get_default_params()
+
+        # SET THE REQUEST PARAMS
+        # only the allowed arguments must be kept
+        # i.e. only those with the key in the default
+        # params dictionary. The params with a default
+        # value will be discarded in order to keep the
+        # request URL/payload as small as possible
+        self._params = {}
+        for k, v in kwargs.iteritems():
+            if k in self._def_params and v != self._def_params[k]:
+                self._params[k] = v
 
     def _get_result(self):
+        print str(self._params)
         response = request("GET", self.URL, params=self._params)
         response.raise_for_status()
         if len(response.url) > 2000:
@@ -56,7 +68,7 @@ class APEWSRequest(object):
             'uri': '',
             'guess': 'off',
             'noclex': 'off',
-            'solo': 'owlxml',
+            'solo': '',
             'cdrs': 'off',
             'cdrshtml': 'off',
             'cdrspp': 'off',
@@ -83,7 +95,7 @@ class APEWSRequest(object):
 
     @classmethod
     def build(cls, text, **kwargs):
-        params = kwargs if kwargs else cls._get_default_params()
+        params = kwargs if kwargs else {}
         params["text"] = text
         return APEWSRequest(**params)
 
@@ -95,6 +107,7 @@ if __name__ == '__main__':
     print r.result
     print
 
-    r = APEWSRequest.build("Every human being is mortal.")
+    r = APEWSRequest.build("Every human being is mortal.",
+                           **{"solo": "owlxml"})
     print r.result
     print
