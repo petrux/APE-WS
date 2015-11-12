@@ -48,9 +48,38 @@ class APEWSRequest(object):
         """ TODO
         """
         return {
-            "text": "",
-            "solo": "owlxml"
+            'text': '',
+            'file': '',
+            'ulextext': '',
+            'ulexfile': '',
+            'ulexreload': 'off',
+            'uri': '',
+            'guess': 'off',
+            'noclex': 'off',
+            'solo': 'owlxml',
+            'cdrs': 'off',
+            'cdrshtml': 'off',
+            'cdrspp': 'off',
+            'cdrsxml': 'off',
+            'cfol': 'off',
+            'cowlfss': 'off',
+            'cowlfsspp': 'off',
+            'cowlrdf': 'off',
+            'cowlxml': 'off',
+            'cparaphrase': 'off',
+            'cparaphrase1': 'off',
+            'cparaphrase2': 'off',
+            'cpnf': 'off',
+            'cruleml': 'off',
+            'csentences': 'off',
+            'csyntax': 'off',
+            'csyntaxd': 'off',
+            'csyntaxdpp': 'off',
+            'csyntaxpp': 'off',
+            'ctokens': 'off',
+            'ctptp': 'off',
         }
+
 
     @classmethod
     def build(cls, text, **kwargs):
