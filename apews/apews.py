@@ -60,10 +60,13 @@ class APEWSRequest(object):
                 self._params[k] = v
 
     def _get_result(self):
-        print str(self._params)
         response = request("GET", self.__url, params=self._params)
         response.raise_for_status()
         if len(response.url) > 2000:
+            # if the url is longer than 2000 chars, then the
+            # HTTP protocol denies the possibilities of a GET
+            # request, so it must be switch to POST. This
+            # operation is notified with a stderr message.
             sys.stderr.write("URL is " + str(len(response.url))
                              + " character long, switching to POST.")
             response = request("POST", self.__url, data=self._params)
@@ -81,6 +84,7 @@ class APEWSRequest(object):
     def get_param_value(self, name):
         """ TODO
         """
+
         if name in self._params:
             return self._params[name]
         if name in self.__default:
