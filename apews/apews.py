@@ -21,7 +21,7 @@ class APEWSRequest(object):
         response = request("GET", self.URL, params=self._params)
         response.raise_for_status()
         if len(response.url) > 2000:
-            sys.stderr.write("URL is " + len(response.url)
+            sys.stderr.write("URL is " + str(len(response.url))
                              + " character long, switching to POST.")
             response = request("POST", self.URL, data=self._params)
         return response.text
@@ -93,3 +93,8 @@ if __name__ == '__main__':
         "solo": "owlxml"
     })
     print r.result
+    print
+
+    r = APEWSRequest.build("Every human being is mortal.")
+    print r.result
+    print
