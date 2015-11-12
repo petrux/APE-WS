@@ -8,14 +8,45 @@ class APEWSRequest(object):
     """ TODO
     """
 
-    URL = "http://attempto.ifi.uzh.ch/ws/ape/apews.perl"
+    __url = "http://attempto.ifi.uzh.ch/ws/ape/apews.perl"
+    __default = {
+        'text': '',
+        'file': '',
+        'ulextext': '',
+        'ulexfile': '',
+        'ulexreload': 'off',
+        'uri': '',
+        'guess': 'off',
+        'noclex': 'off',
+        'solo': '',
+        'cdrs': 'off',
+        'cdrshtml': 'off',
+        'cdrspp': 'off',
+        'cdrsxml': 'off',
+        'cfol': 'off',
+        'cowlfss': 'off',
+        'cowlfsspp': 'off',
+        'cowlrdf': 'off',
+        'cowlxml': 'off',
+        'cparaphrase': 'off',
+        'cparaphrase1': 'off',
+        'cparaphrase2': 'off',
+        'cpnf': 'off',
+        'cruleml': 'off',
+        'csentences': 'off',
+        'csyntax': 'off',
+        'csyntaxd': 'off',
+        'csyntaxdpp': 'off',
+        'csyntaxpp': 'off',
+        'ctokens': 'off',
+        'ctptp': 'off',
+    }
 
     def __init__(self, **kwargs):
         """ TODO
         """
 
         self._result = None
-        self._def_params = self._get_default_params()
 
         # SET THE REQUEST PARAMS
         # only the allowed arguments must be kept
@@ -25,17 +56,17 @@ class APEWSRequest(object):
         # request URL/payload as small as possible
         self._params = {}
         for k, v in kwargs.iteritems():
-            if k in self._def_params and v != self._def_params[k]:
+            if k in self.__default and v != self.__default[k]:
                 self._params[k] = v
 
     def _get_result(self):
         print str(self._params)
-        response = request("GET", self.URL, params=self._params)
+        response = request("GET", self.__url, params=self._params)
         response.raise_for_status()
         if len(response.url) > 2000:
             sys.stderr.write("URL is " + str(len(response.url))
                              + " character long, switching to POST.")
-            response = request("POST", self.URL, data=self._params)
+            response = request("POST", self.__url, data=self._params)
         return response.text
 
     @property
@@ -54,44 +85,6 @@ class APEWSRequest(object):
 
     def set_param_value(self, name, value):
         self._params[name] = value
-
-    @classmethod
-    def _get_default_params(cls):
-        """ TODO
-        """
-        return {
-            'text': '',
-            'file': '',
-            'ulextext': '',
-            'ulexfile': '',
-            'ulexreload': 'off',
-            'uri': '',
-            'guess': 'off',
-            'noclex': 'off',
-            'solo': '',
-            'cdrs': 'off',
-            'cdrshtml': 'off',
-            'cdrspp': 'off',
-            'cdrsxml': 'off',
-            'cfol': 'off',
-            'cowlfss': 'off',
-            'cowlfsspp': 'off',
-            'cowlrdf': 'off',
-            'cowlxml': 'off',
-            'cparaphrase': 'off',
-            'cparaphrase1': 'off',
-            'cparaphrase2': 'off',
-            'cpnf': 'off',
-            'cruleml': 'off',
-            'csentences': 'off',
-            'csyntax': 'off',
-            'csyntaxd': 'off',
-            'csyntaxdpp': 'off',
-            'csyntaxpp': 'off',
-            'ctokens': 'off',
-            'ctptp': 'off',
-        }
-
 
     @classmethod
     def build(cls, text, **kwargs):
