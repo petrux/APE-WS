@@ -81,10 +81,20 @@ class APEWSRequest(object):
     def get_param_value(self, name):
         """ TODO
         """
-        return self._params[name]
+        if name in self._params:
+            return self._params[name]
+        if name in self.__default:
+            return self.__default[name]
+        raise ValueError("Illegal parameter name: '" + name + "'")
 
     def set_param_value(self, name, value):
-        self._params[name] = value
+        """ TODO
+        """
+
+        if name not in self.__default:
+            ValueError("Illegal parameter name: '" + name + "'")
+        if self.__default[name] != value:
+            self._params[name] = value
 
     @classmethod
     def build(cls, text, **kwargs):
